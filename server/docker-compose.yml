@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  bot:
+    build:
+      context: .
+    # There are a number of variables we can provide before we can launch this service
+    #  ENCODE_SONGS (bool)
+    #    Encode song URLs
+    #  RANDOMIZE (bool)
+    #    Randomize track list on session creation
+    #  PORT
+    #    Port of service
+    #  DEBUG (bool)
+    #    Show debug logs
+    # The most convenient way is to create a variables.env file and store each variable there
+    env_file:
+      - variables.env
+
+    # Change this to your static volume
+    volumes:
+    - /tmp/vue-jukebox/static:/usr/src/app/static
+
+    ports:
+    # Change this if you've specified a different port
+      - 5001:5001
