@@ -8,7 +8,8 @@
         @player-track-ended="ffToggle"
         @player-fr="frToggle"
         @player-ff="ffToggle"
-        @player-play="playPauseToggle">
+        @player-play="playPauseToggle"
+        @network-error="reloadSongs">
       </juke-player>
       <juke-list
         :songs="songs"
@@ -32,17 +33,9 @@
 
   import axios from "axios"
 
+  const SONG_URI = '/songs'
+
   let axiosInstance
-
-  function parseSongs(response, vm) {
-    let key = response.headers['x-juke-key']
-
-    if (vm.jukeKey !== key) {
-      vm.jukeKey = key
-      axiosInstance.defaults.headers['X-Juke-Key'] = vm.jukeKey
-    }
-    vm.songs = vm.songs.concat(response.data)
-  }
 
   export default {
     name: 'app',
@@ -90,12 +83,35 @@
         this.busy = true
 
         this.page += 10
-        axiosInstance.get('/songs/' + this.page)
-          .then(response => parseSongs(response, this))
+        this.getSongs(SONG_URI + "/" + this.page)
+      },
+      parseSongs(response) {
+        let key = response.headers['x-juke-key']
+
+        if (this.jukeKey !== key) {
+          this.setJukeKey(key)
+        }
+        this.songs = this.songs.concat(response.data)
+      },
+      reloadSongs() {
+        this.isPlaying = false
+        this.page = 0
+        this.currentIndex = -1
+        this.songs = []
+
+        this.getSongs()
+      },
+      getSongs(url=SONG_URI) {
+        axiosInstance.get(url)
+          .then(response => this.parseSongs(response))
           .finally(() => {
             this.busy = false
           })
       },
+      setJukeKey(key) {
+        this.jukeKey = key
+        axiosInstance.defaults.headers['X-Juke-Key'] = this.jukeKey
+      }
     },
     data: () => ({
       songs: [],
@@ -108,11 +124,7 @@
     }),
     mounted() {
       axiosInstance = axios.create()
-      axiosInstance.get('/songs')
-        .then(response => parseSongs(response, this))
-        .finally(() => {
-          this.busy = false
-        })
+      this.getSongs()
     },
     computed: {
       currentSong() {

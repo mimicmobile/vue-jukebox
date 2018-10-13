@@ -2,9 +2,9 @@
   <div class="player-base">
     <img class="juke-img" src="../../assets/juke.png"/>
     <div class="player-buttons">
-      <img @click="$emit('player-fr')" class="icon" src="../../assets/fr.png" />
-      <img @click="$emit('player-play')" class="play icon" :src="playPauseSrc" />
-      <img @click="$emit('player-ff')" class="icon" src="../../assets/ff.png" />
+      <img @click="$emit('player-fr')" class="icon" src="../../assets/fr.png"/>
+      <img @click="$emit('player-play')" class="play icon" :src="playPauseSrc"/>
+      <img @click="$emit('player-ff')" class="icon" src="../../assets/ff.png"/>
     </div>
     <audio id="player" ref="player" v-on:ended="$emit('player-track-ended')">
       <source :src="currentSongUrl">
@@ -23,6 +23,9 @@
       isPlaying: Boolean,
       currentSong: Object
     },
+    data: () => ({
+      audio: undefined
+    }),
     timers: {
       remaining: {
         time: 1000,  // 1s
@@ -42,7 +45,7 @@
     methods: {
       remaining() {
         if (this.isPlaying) {
-          let time = Math.round(this.$refs.player.currentTime - this.$refs.player.duration) * -1
+          let time = Math.round(this.audio.currentTime - this.audio.duration) * -1
           if (!time) return
 
           let minutes = Math.floor(time / 60)
@@ -53,18 +56,19 @@
       },
       playAudio() {
         this.remaining()
-        this.$refs.player.play()
+        this.audio.play()
         this.$timer.start('remaining')
       },
       pauseAudio() {
-        this.$refs.player.pause()
+        this.audio.pause()
         this.$timer.stop('remaining')
-      }
+      },
     },
     watch: {
       currentSong() {
-        this.$refs.player.pause()
-        this.$refs.player.load()
+        this.audio.pause()
+        this.audio.load()
+
         if (this.isPlaying) {
           this.playAudio()
           document.title = this.currentSong.artist + " - " + this.currentSong.track
@@ -79,6 +83,16 @@
         }
       }
     },
+    mounted() {
+      this.audio = this.$el.querySelectorAll('audio')[0]
+
+      let vm = this;
+      this.audio.addEventListener('error', function() {
+        if (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+          vm.$emit('network-error')
+        }
+      }, true)
+    }
   }
 </script>
 
