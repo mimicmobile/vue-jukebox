@@ -3,7 +3,7 @@ import random
 import sqlite3
 from datetime import datetime, timedelta
 
-from flask import Flask, jsonify, request, send_from_directory, abort
+from flask import Flask, jsonify, request, send_from_directory, abort, Response
 from flask_compress import Compress
 from hashids import Hashids
 
@@ -119,13 +119,18 @@ def songs(offset_param=0):
     offset_end = min(offset_param + SONGS_PER_PAGE, list_length)
 
     if offset_param > list_length or offset_start == offset_end:
-        return jsonify([])
+        return jsonify_response(key, [])
 
     song_list = query_db('select rowid, * from songs {}'.format(
         offset_sql(key, list_length, offset_start, offset_end))
     )
 
-    response = jsonify([parse_row(song_row, key, index, offset_param) for index, song_row in enumerate(song_list)])
+    rows = [parse_row(song_row, key, index, offset_param) for index, song_row in enumerate(song_list)]
+    return jsonify_response(key, rows)
+
+
+def jsonify_response(key, json):
+    response = jsonify(json)
     response.headers['X-Juke-Key'] = key
     return response
 
