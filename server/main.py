@@ -173,8 +173,8 @@ def key_valid(key):
 
 def offset_sql(key, length, start, end):
     if songs_randomized():
-        random.seed(key)
-        row_order = random.sample(range(1, length + 1), length)
+        r = random.Random(key)
+        row_order = r.sample(range(1, length + 1), length)
         return "order by {} limit {}".format(", ".join(["rowid={} DESC".format(i) for i in row_order[start:end]]),
                                              end - start)
     else:
