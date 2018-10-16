@@ -1,6 +1,6 @@
 <template>
   <div class="scrollbar" ref="Scrollbar" v-on:scroll="onScroll">
-    <div class="list-holder">
+    <div class="list-holder no-select">
       <div v-for="(song, index) in songs" :song="song" :key="song.id" class="list-cont" :class="song.color_class"
            ref="songs"
            @click="$emit('changeSource', index)">
@@ -84,13 +84,13 @@
 
 <style>
   .scrollbar {
-    height: 412px !important;
-    width: 290px !important;
-    background-color: #070707 !important;
-    margin: 70px 5px 5px 5px !important;
-    flex-basis: 280px !important;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    height: 327px !important;
+    width: 280px;
     overflow-y: scroll;
     overflow-x: hidden;
+    display: flex;
   }
 
   ::-webkit-scrollbar {
@@ -99,7 +99,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(100, 100, 100, 0.8);
+    background: rgba(100, 100, 100, 0.5);
   }
 
   .list-holder {
@@ -118,7 +118,6 @@
   .track-num {
     position: absolute;
     font-family: 'Arcade', 'Avenir', Helvetica, Arial, sans-serif;
-    margin-top: 2px;
     left: 7px;
     font-size: 1em;
   }
@@ -134,26 +133,6 @@
   .material-icons-pos {
     position: absolute;
     margin-top: 2px;
-  }
-
-  .red {
-    background-color: #FF4C73;
-  }
-
-  .green {
-    background-color: #59FF98;
-  }
-
-  .purple {
-    background-color: #FE7EFF;
-  }
-
-  .orange {
-    background-color: #FF9900;
-  }
-
-  .blue {
-    background-color: #5C86FF;
   }
 
   .list-row {
@@ -189,6 +168,7 @@
     max-height: 2em;
     line-height: 1em;
     word-spacing: 3px;
+    text-align: center;
   }
 
   .list-side {

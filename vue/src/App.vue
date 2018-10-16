@@ -1,7 +1,6 @@
 <template>
-  <div class="base">
-    <div class="juke-base" tabindex="-1" @keyup.space="playPauseToggle" @keyup.right="ffToggle" @keyup.left="frToggle">
-      <juke-player
+  <div class="juke-base" tabindex="-1" @keyup.space="playPauseToggle" @keyup.right="ffToggle" @keyup.left="frToggle">
+    <juke-player
         :is-playing="isPlaying"
         :current-song="currentSong"
         @remaining-time-update="updateRemainingTime"
@@ -10,15 +9,14 @@
         @player-ff="ffToggle"
         @player-play="playPauseToggle"
         @network-error="reloadSongs">
-      </juke-player>
-      <juke-list
+    </juke-player>
+    <juke-list
         :songs="songs"
         :current-index="currentIndex"
         :is-playing="isPlaying"
         ref="jukeList"
         @loadMoreSongs="loadMoreSongs"
         @changeSource="changeSource"></juke-list>
-    </div>
   </div>
 </template>
 
@@ -92,6 +90,7 @@
           this.setJukeKey(key)
         }
         this.songs = this.songs.concat(response.data)
+        this.busy = false
       },
       reloadSongs() {
         this.isPlaying = false
@@ -101,12 +100,9 @@
 
         this.getSongs()
       },
-      getSongs(url=SONG_URI) {
+      getSongs(url = SONG_URI) {
         axiosInstance.get(url)
           .then(response => this.parseSongs(response))
-          .finally(() => {
-            this.busy = false
-          })
       },
       setJukeKey(key) {
         this.jukeKey = key
@@ -157,8 +153,11 @@
 </script>
 
 <style>
-  html {
-    background-color: #000;
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
   }
 
   @font-face {
@@ -189,29 +188,56 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  @media screen and (max-width: 600px) {
-    .juke-base {
-      flex-direction: column;
-    }
-  }
-
-  .base {
+  .juke-base {
     font-family: 'Arcade', 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     max-width: 800px;
-    margin: auto;
+    padding-bottom: 50px;
+    justify-content: space-evenly;
+    outline-style: none;
+    box-shadow: none;
+    border-color: transparent;
   }
 
-  .juke-base {
-    display: flex;
-    border-radius: 5px;
-    background-color: #0F0F0F;
-    flex-wrap: wrap;
-    flex-direction: row;
-    padding: 20px;
-    justify-content: center;
+  .red {
+    transition: all 0.5s linear;
+    background-color: #930d28;
+    border-color: #930d28;
+  }
+
+  .green {
+    transition: all 0.5s linear;
+    background-color: #1f7a34;
+    border-color: #1f7a34;
+  }
+
+  .purple {
+    transition: all 0.5s linear;
+    background-color: #331256;
+    border-color: #331256;
+  }
+
+  .orange {
+    transition: all 0.5s linear;
+    background-color: #a54d00;
+    border-color: #a54d00;
+  }
+
+  .blue {
+    transition: all 0.5s linear;
+    background-color: #1b34ad;
+    border-color: #1b34ad;
+  }
+
+  .no-select {
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
   }
 
 </style>

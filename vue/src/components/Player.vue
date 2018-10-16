@@ -1,15 +1,38 @@
 <template>
   <div class="player-base">
-    <img class="juke-img" src="../../assets/juke.png"/>
-    <div class="player-buttons">
-      <img @click="$emit('player-fr')" class="icon" src="../../assets/fr.png"/>
-      <img @click="$emit('player-play')" class="play icon" :src="playPauseSrc"/>
-      <img @click="$emit('player-ff')" class="icon" src="../../assets/ff.png"/>
-    </div>
     <audio id="player" ref="player" v-on:ended="$emit('player-track-ended')">
       <source :src="currentSongUrl">
       Your browser does not support the audio element.
     </audio>
+
+    <div :class="playingBg" class="controls-base">
+      <div class="controls-box no-select">
+        <i @click="$emit('player-fr')" class="material-icons">fast_rewind</i>
+        <i @click="$emit('player-play')" class="material-icons">{{ playPauseSrc }}</i>
+        <i @click="$emit('player-ff')" class="material-icons">fast_forward</i>
+      </div>
+    </div>
+    <div :class="playingBg" class="now-playing">
+      <div class="now-playing-inner">
+        <div class="now-playing-title">
+          <span v-if="currentSong.artist">Now Playing..</span>
+          <span v-else>Choose a song</span>
+        </div>
+        <transition>
+          <div v-if="currentSong.artist" class="now-playing-track-info">
+            <div>
+              Artist: {{ currentSongArtist }}
+            </div>
+            <div>
+              Track: {{ currentSongTrack }}
+            </div>
+            <div>
+              Album: {{ currentSongAlbum || "Unknown" }}
+            </div>
+          </div>
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -24,7 +47,7 @@
       currentSong: Object
     },
     data: () => ({
-      audio: undefined
+      audio: undefined,
     }),
     timers: {
       remaining: {
@@ -35,11 +58,22 @@
     },
     computed: {
       playPauseSrc() {
-        let file = this.isPlaying ? "pause.png" : "play.png"
-        return require(`../../assets/${file}`)
+        return this.isPlaying ? "pause" : "play_arrow"
       },
       currentSongUrl() {
         return this.currentSong.url
+      },
+      currentSongArtist() {
+        return this.currentSong.artist
+      },
+      currentSongTrack() {
+        return this.currentSong.track
+      },
+      currentSongAlbum() {
+        return this.currentSong.album
+      },
+      playingBg() {
+        return this.currentSong.color_class !== undefined ? this.currentSong.color_class : "red"
       }
     },
     methods: {
@@ -86,8 +120,8 @@
     mounted() {
       this.audio = this.$el.querySelectorAll('audio')[0]
 
-      let vm = this;
-      this.audio.addEventListener('error', function() {
+      let vm = this
+      this.audio.addEventListener('error', function () {
         if (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
           vm.$emit('network-error')
         }
@@ -97,28 +131,91 @@
 </script>
 
 <style>
+  .now-playing {
+    position: relative;
+    margin: 8px;
+    padding: 6px;
+    height: auto;
+    width: 260px;
+    border-radius: 2px;
+    font-family: 'Arcade', 'Avenir', Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    word-wrap: break-word;
+    word-spacing: 3px;
+  }
+
+  .now-playing-inner {
+    display: flex;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: #fff;
+    flex-direction: column;
+    opacity: 0.9;
+    align-items: start;
+    justify-content: start;
+  }
+
+  .now-playing-title {
+    font-size: 1.2em;
+    max-height: 2.4em;
+    line-height: 1.2em;
+    margin: 0 20px;
+  }
+
+  .now-playing-track-info {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    margin: 10px 20px 10px;
+  }
+
+  .now-playing-track-info div {
+    font-size: 1em;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    max-height: 2em;
+    line-height: 1em;
+    text-align: start;
+  }
+
+  .controls-base {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    margin: 8px;
+    padding: 6px;
+    width: 260px;
+    height: auto;
+  }
+
+  .controls-box {
+    display: flex;
+    height: auto;
+    width: 100%;
+    padding: 2px;
+    background-color: #fff;
+    justify-content: space-evenly;
+    opacity: 0.9;
+  }
+
+  .controls-box i {
+    color: #000;
+    cursor: pointer;
+    font-size: 40px;
+  }
+
+  .controls-box i:active {
+    transform: translateY(3px);
+  }
+
   .player-base {
     position: relative;
-    height: 600px;
-    width: auto;
-  }
-
-  .icon {
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-  }
-
-  .juke-img {
-    height: 100%;
-  }
-
-  .player-buttons {
-    position: absolute;
-    overflow: auto;
-    left: 172px;
-    top: 256px;
-    width: 102px;
+    display: flex;
+    flex-direction: column;
   }
 
 </style>
