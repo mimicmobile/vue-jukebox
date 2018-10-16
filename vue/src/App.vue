@@ -80,7 +80,6 @@
         if (this.busy) return
         this.busy = true
 
-        this.page += 10
         this.getSongs(SONG_URI + "/" + this.page)
       },
       parseSongs(response) {
@@ -89,10 +88,14 @@
         if (this.jukeKey !== key) {
           this.setJukeKey(key)
         }
+
+
+        this.page += 10
         this.songs = this.songs.concat(response.data)
-        this.busy = false
       },
       reloadSongs() {
+        if (this.busy) return
+
         this.isPlaying = false
         this.page = 0
         this.currentIndex = -1
@@ -102,7 +105,7 @@
       },
       getSongs(url = SONG_URI) {
         axiosInstance.get(url)
-          .then(response => this.parseSongs(response))
+          .then(response => this.parseSongs(response)).then(() => this.busy = false)
       },
       setJukeKey(key) {
         this.jukeKey = key
