@@ -27,3 +27,4 @@ package-lock.json
 *.sqlite
 server/static/
 vue/dist
+variables.env
