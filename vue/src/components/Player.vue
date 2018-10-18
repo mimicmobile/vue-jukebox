@@ -39,6 +39,8 @@
 <script>
   import VueTimers from 'vue-timers/mixin'
 
+  let origTitle = document.title
+
   export default {
     name: 'jukePlayer',
     mixins: [VueTimers],
@@ -105,15 +107,15 @@
 
         if (this.isPlaying) {
           this.playAudio()
-          document.title = this.currentSong.artist + " - " + this.currentSong.track
         }
       },
       isPlaying() {
         if (!this.isPlaying) {
           this.pauseAudio()
-          document.title = "vue-jukebox"
+          document.title = origTitle
         } else {
           this.playAudio()
+          document.title = this.currentSong.artist + " - " + this.currentSong.track
         }
       }
     },
@@ -135,8 +137,6 @@
     position: relative;
     margin: 8px;
     padding: 6px;
-    height: auto;
-    width: 260px;
     border-radius: 2px;
     font-family: 'Arcade', 'Avenir', Helvetica, Arial, sans-serif;
     font-size: 1em;
@@ -188,18 +188,15 @@
     border-radius: 2px;
     margin: 8px;
     padding: 6px;
-    width: 260px;
-    height: auto;
   }
 
   .controls-box {
     display: flex;
-    height: auto;
-    width: 100%;
     padding: 2px;
     background-color: #fff;
     justify-content: space-evenly;
     opacity: 0.9;
+    width: 100%;
   }
 
   .controls-box i {
@@ -216,6 +213,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    margin-bottom: 20px;
   }
 
 </style>

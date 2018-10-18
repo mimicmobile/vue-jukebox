@@ -198,12 +198,11 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    max-width: 800px;
-    padding-bottom: 50px;
-    justify-content: space-evenly;
+    justify-content: space-between;
     outline-style: none;
     box-shadow: none;
     border-color: transparent;
+    height: inherit;
   }
 
   .red {

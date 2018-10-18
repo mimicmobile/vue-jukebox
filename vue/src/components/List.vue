@@ -84,13 +84,14 @@
 
 <style>
   .scrollbar {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    height: 327px !important;
-    width: 280px;
+    margin: 4px;
+    min-width: 280px;
     overflow-y: scroll;
     overflow-x: hidden;
     display: flex;
+    flex: 1;
+    position: relative;
+    height: inherit;
   }
 
   ::-webkit-scrollbar {
@@ -103,7 +104,7 @@
   }
 
   .list-holder {
-    position: relative;
+    position: absolute;
     width: 100%;
   }
 
