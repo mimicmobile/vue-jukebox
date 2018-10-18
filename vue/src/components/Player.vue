@@ -94,10 +94,12 @@
         this.remaining()
         this.audio.play()
         this.$timer.start('remaining')
+        document.title = this.currentSong.artist + " - " + this.currentSong.track
       },
       pauseAudio() {
         this.audio.pause()
         this.$timer.stop('remaining')
+        document.title = origTitle
       },
     },
     watch: {
@@ -112,10 +114,8 @@
       isPlaying() {
         if (!this.isPlaying) {
           this.pauseAudio()
-          document.title = origTitle
         } else {
           this.playAudio()
-          document.title = this.currentSong.artist + " - " + this.currentSong.track
         }
       }
     },
