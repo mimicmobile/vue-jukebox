@@ -3,11 +3,11 @@
     <juke-player
         :is-playing="isPlaying"
         :current-song="currentSong"
+        :player-play="playPauseToggle"
+        :player-fr="frToggle"
+        :player-ff="ffToggle"
         @remaining-time-update="updateRemainingTime"
         @player-track-ended="ffToggle"
-        @player-fr="frToggle"
-        @player-ff="ffToggle"
-        @player-play="playPauseToggle"
         @network-error="reloadSongs">
     </juke-player>
     <juke-list

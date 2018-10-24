@@ -7,9 +7,9 @@
 
     <div :class="playingBg" class="controls-base">
       <div class="controls-box no-select">
-        <i @click="$emit('player-fr')" class="material-icons">fast_rewind</i>
-        <i @click="$emit('player-play')" class="material-icons">{{ playPauseSrc }}</i>
-        <i @click="$emit('player-ff')" class="material-icons">fast_forward</i>
+        <i @click="playerFr()" class="material-icons">fast_rewind</i>
+        <i @click="playerPlay()" class="material-icons">{{ playPauseSrc }}</i>
+        <i @click="playerFf()" class="material-icons">fast_forward</i>
       </div>
     </div>
     <div :class="playingBg" class="now-playing">
@@ -46,7 +46,10 @@
     mixins: [VueTimers],
     props: {
       isPlaying: Boolean,
-      currentSong: Object
+      currentSong: Object,
+      playerPlay: Function,
+      playerFf: Function,
+      playerFr: Function,
     },
     data: () => ({
       audio: undefined,
