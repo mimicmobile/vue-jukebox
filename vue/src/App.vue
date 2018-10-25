@@ -6,6 +6,7 @@
         :player-play="playPauseToggle"
         :player-fr="frToggle"
         :player-ff="ffToggle"
+        ref="jukePlayer"
         @remaining-time-update="updateRemainingTime"
         @player-track-ended="ffToggle"
         @network-error="reloadSongs">
@@ -54,8 +55,14 @@
 
       },
       playPauseToggle() {
-        this.startPlaying()
         this.isPlaying = !this.isPlaying
+
+        this.startPlaying()
+        if (this.isPlaying) {
+          this.$refs.jukePlayer.playAudio()
+        } else {
+          this.$refs.jukePlayer.pauseAudio()
+        }
       },
       changeSource(index) {
         this.startPlaying()

@@ -113,13 +113,6 @@
         if (this.isPlaying) {
           this.playAudio()
         }
-      },
-      isPlaying() {
-        if (!this.isPlaying) {
-          this.pauseAudio()
-        } else {
-          this.playAudio()
-        }
       }
     },
     mounted() {
