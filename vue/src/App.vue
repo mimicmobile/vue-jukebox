@@ -1,7 +1,6 @@
 <template>
   <div class="juke-base" tabindex="-1" @keyup.space="playPauseToggle" @keyup.right="ffToggle" @keyup.left="frToggle">
     <juke-player
-        :is-playing="isPlaying"
         :current-song="currentSong"
         :player-play="playPauseToggle"
         :player-fr="frToggle"
@@ -17,7 +16,7 @@
         :is-playing="isPlaying"
         ref="jukeList"
         @loadMoreSongs="loadMoreSongs"
-        @changeSource="changeSource"></juke-list>
+        :change-source="changeSource"></juke-list>
   </div>
 </template>
 
@@ -55,25 +54,19 @@
 
       },
       playPauseToggle() {
-        this.isPlaying = !this.isPlaying
-
-        this.startPlaying()
-        if (this.isPlaying) {
-          this.$refs.jukePlayer.playAudio()
-        } else {
-          this.$refs.jukePlayer.pauseAudio()
-        }
+        this.startPlaying();
+        this.$refs.jukePlayer.playPauseToggle();
       },
       changeSource(index) {
-        this.startPlaying()
+        //this.startPlaying()
 
-        if (this.isPlaying && index === this.currentIndex) {
+        if (index === this.currentIndex && this.isPlaying()) {
           // Pause when same track is double tapped
-          this.isPlaying = false
+          //this.pause()
         } else {
           this.computedIndex = index
 
-          this.isPlaying = true
+          this.play()
         }
       },
       startPlaying() {
@@ -81,7 +74,13 @@
       },
       stopPlaying() {
         this.computedIndex = -1
-        this.isPlaying = false
+        this.pause()
+      },
+      pause() {
+        this.$refs.jukePlayer.pauseAudio()
+      },
+      play() {
+        this.$refs.jukePlayer.playAudio()
       },
       loadMoreSongs() {
         if (this.busy) return
@@ -102,26 +101,27 @@
       },
       reloadSongs() {
         if (this.busy) return
-
-        this.isPlaying = false
+        this.stopPlaying()
         this.page = 0
-        this.currentIndex = -1
         this.songs = []
 
         this.getSongs()
       },
       getSongs(url = SONG_URI) {
-        axiosInstance.get(url)
+        return axiosInstance.get(url)
           .then(response => this.parseSongs(response)).then(() => this.busy = false)
       },
       setJukeKey(key) {
         this.jukeKey = key
         axiosInstance.defaults.headers['X-Juke-Key'] = this.jukeKey
+      },
+      isPlaying() {
+        console && console.log(this.$refs.jukePlayer && this.$refs.jukePlayer.isPlaying)
+        return this.$refs.jukePlayer && this.$refs.jukePlayer.isPlaying
       }
     },
     data: () => ({
       songs: [],
-      isPlaying: false,
       currentIndex: -1,
       remainingTime: "",
       page: 0,
@@ -130,7 +130,10 @@
     }),
     mounted() {
       axiosInstance = axios.create()
-      this.getSongs()
+      this.getSongs().then(() => {
+        if (this.currentIndex === -1)
+          this.computedIndex = 0
+      })
     },
     computed: {
       currentSong() {
@@ -155,9 +158,10 @@
           Vue.set(this.songs[index], 'remainingTime', "")
           this.$refs.jukeList.scrollToCurrent(index)
         },
-      }
+      },
+      
+    },
 
-    }
   }
 
 </script>

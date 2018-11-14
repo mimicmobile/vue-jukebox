@@ -3,7 +3,7 @@
     <div class="list-holder no-select">
       <div v-for="(song, index) in songs" :song="song" :key="song.id" class="list-cont" :class="song.color_class"
            ref="songs"
-           @click="$emit('changeSource', index)">
+           @click="changeSource(index)">
         <div class="list-row">
           <div class="list-left list-side">
             <img class="list-left list-side" src="../../assets/topleft.png"/>
@@ -54,7 +54,8 @@
     props: {
       songs: Array,
       currentIndex: Number,
-      isPlaying: Boolean,
+      isPlaying: Function,
+      changeSource: Function,
     },
     created: function () {
       this.throttledLoad = throttle(this.loadMoreSongs, 250, this)
@@ -62,7 +63,7 @@
     methods: {
       songIcon(index) {
         if (index === this.currentIndex) {
-          return this.isPlaying ? "volume_up" : "pause"
+          return this.isPlaying() ? "volume_up" : "pause"
         }
         return ""
       },

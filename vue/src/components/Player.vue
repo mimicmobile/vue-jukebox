@@ -1,8 +1,11 @@
 <template>
   <div class="player-base">
-    <audio id="player" ref="player" v-on:ended="$emit('player-track-ended')">
-      <source :src="currentSongUrl">
-      Your browser does not support the audio element.
+    <audio
+      :src="currentSongUrl"
+      id="player"
+      ref="player"
+      v-on:ended="$emit('player-track-ended')"
+    >
     </audio>
 
     <div :class="playingBg" class="controls-base">
@@ -45,7 +48,6 @@
     name: 'jukePlayer',
     mixins: [VueTimers],
     props: {
-      isPlaying: Boolean,
       currentSong: Object,
       playerPlay: Function,
       playerFf: Function,
@@ -53,6 +55,7 @@
     },
     data: () => ({
       audio: undefined,
+      isPlaying: false,
     }),
     timers: {
       remaining: {
@@ -65,6 +68,7 @@
       playPauseSrc() {
         return this.isPlaying ? "pause" : "play_arrow"
       },
+
       currentSongUrl() {
         return this.currentSong.url
       },
@@ -94,23 +98,34 @@
         }
       },
       playAudio() {
+        this.isPlaying = true
         this.remaining()
         this.audio.play()
         this.$timer.start('remaining')
         document.title = this.currentSong.artist + " - " + this.currentSong.track
       },
       pauseAudio() {
+        this.isPlaying = false
         this.audio.pause()
         this.$timer.stop('remaining')
         document.title = origTitle
       },
+      playPauseToggle() {
+        if (this.isPlaying) {
+          this.pauseAudio()
+        } else {
+          this.playAudio()
+        }
+      },
     },
     watch: {
       currentSong() {
-        this.audio.pause()
-        this.audio.load()
+        let wasPlaying = this.isPlaying;
+        console.log('wp', wasPlaying)
+        //this.audio.pause()
+        //this.audio.load()
 
-        if (this.isPlaying) {
+        if (wasPlaying) {
           this.playAudio()
         }
       }
@@ -123,7 +138,7 @@
         if (this.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
           vm.$emit('network-error')
         }
-      }, true)
+      }, true);
     }
   }
 </script>
