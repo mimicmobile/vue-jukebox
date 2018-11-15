@@ -28,3 +28,4 @@ package-lock.json
 server/static/
 vue/dist
 variables.env
+*.csv
