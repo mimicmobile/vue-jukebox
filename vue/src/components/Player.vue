@@ -26,8 +26,14 @@
             <div>
               Track: {{ currentSongTrack }}
             </div>
-            <div>
-              Album: {{ currentSongAlbum || "Unknown" }}
+            <div v-if="currentSongAlbum">
+              Album: {{ currentSongAlbum }}
+            </div>
+            <div v-if="currentSongLabel">
+              Label: {{ currentSongLabel }}
+            </div>
+            <div v-if="currentSongSongwriter">
+              Songwriter: {{ currentSongSongwriter }}
             </div>
           </div>
         </transition>
@@ -73,6 +79,12 @@
       },
       currentSongAlbum() {
         return this.currentSong.album
+      },
+      currentSongLabel() {
+        return this.currentSong.label
+      },
+      currentSongSongwriter() {
+        return this.currentSong.songwriter
       },
       playingBg() {
         return this.currentSong.color_class !== undefined ? this.currentSong.color_class : "red"
