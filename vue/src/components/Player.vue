@@ -187,7 +187,7 @@
     margin-top: 4px;
     margin-bottom: 4px;
     overflow: hidden;
-    max-height: 2em;
+    max-height: 3em;
     line-height: 1em;
     text-align: start;
   }
