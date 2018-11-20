@@ -13,6 +13,7 @@ STATIC_URL = os.getenv('STATIC_URL')
 STATIC_DIR = os.getenv('STATIC_DIR')
 RANDOMIZE = os.getenv('RANDOMIZE')
 ENCODE_SONGS = os.getenv('ENCODE_SONGS')
+START_TRACK = os.getenv('START_TRACK')
 
 SONGS_PER_PAGE = 10
 SESSION_TIMEOUT_HOURS = 4
@@ -176,10 +177,19 @@ def key_valid(key):
     return False
 
 
+def position_start_track(row_order):
+    if START_TRACK:
+        song = query_db('SELECT rowid FROM songs WHERE path=?', (START_TRACK,), single=True)
+        if song:
+            row_order.insert(0, row_order.pop(row_order.index(song['rowid'])))
+    return row_order
+
+
 def offset_sql(key, length, start, end):
     if songs_randomized():
         r = random.Random(key)
         row_order = r.sample(range(1, length + 1), length)
+        row_order = position_start_track(row_order)
         return "order by {} limit {}".format(", ".join(["rowid={} DESC".format(i) for i in row_order[start:end]]),
                                              end - start)
     else:

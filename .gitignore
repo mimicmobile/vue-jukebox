@@ -29,3 +29,5 @@ server/static/
 vue/dist
 variables.env
 *.csv
+.ipynb_checkpoints
+*.ipynb
