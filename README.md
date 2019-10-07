@@ -55,8 +55,8 @@ The web component can be loaded into your project by including the required depe
     <body>
         <juke-box></juke-box>
 
-        <script type="text/javascript" src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/vue@2.5.17/dist/vue.runtime.min.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/@webcomponents/webcomponentsjs@2.3.0/webcomponents-loader.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/vue@2.6.10/dist/vue.runtime.min.js"></script>
         <script type="text/javascript" src="/juke-box.min.js"></script>
     </body>
 </html>
