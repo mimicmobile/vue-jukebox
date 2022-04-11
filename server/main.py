@@ -105,6 +105,20 @@ def song(key, encoded_track):
     return send_from_directory(os.path.join(root_dir, 'static', subdir),  song_filename)
 
 
+@app.route('/<string:text>', methods=['GET'])
+def catch_all(text):
+    root_dir = os.path.dirname(__file__)
+    real_file = os.path.join(root_dir, 'static', text)
+    if os.path.isfile(real_file):
+        return send_from_directory(os.path.join(root_dir, 'static'), text)
+    else:
+        index_file = os.path.join(root_dir, 'static', text, 'index.html')
+        if os.path.isfile(index_file):
+            return send_from_directory(os.path.join(root_dir, 'static', text), 'index.html')
+        else:
+            return abort(404)
+
+
 @app.route('/songs')
 @app.route('/songs/<int:offset_param>')
 def songs(offset_param=0):
